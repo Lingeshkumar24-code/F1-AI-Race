@@ -11,9 +11,10 @@ build/
 *.egg
 .eggs/
 
-# Environment
+# Environment (keep secrets local, allow production config)
 .env
-*.env
+.env.local
+.env.*.local
 
 # ML Models (optional: comment out if you want to include pre-trained models)
 # backend/models/*.pkl
