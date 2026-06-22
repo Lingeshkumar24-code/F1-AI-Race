@@ -8,7 +8,12 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first (for layer caching)
+# Install CPU-only PyTorch first to avoid pulling 5GB of CUDA libraries
+RUN pip install --no-cache-dir \
+    torch==2.3.1+cpu \
+    --index-url https://download.pytorch.org/whl/cpu
+
+# Copy requirements and install the rest
 COPY backend/requirements.txt ./backend/requirements.txt
 RUN pip install --no-cache-dir -r ./backend/requirements.txt
 
