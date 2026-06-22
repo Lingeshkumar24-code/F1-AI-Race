@@ -2,22 +2,23 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-# Install build dependencies for libraries like scikit-learn/xgboost if needed
+# Install build dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy requirements first (for layer caching)
+COPY backend/requirements.txt ./backend/requirements.txt
+RUN pip install --no-cache-dir -r ./backend/requirements.txt
 
-# Copy all backend code under the /app/backend directory
-COPY . /app/backend
+# Copy all backend code
+COPY backend/ /app/backend/
 
-# Set python path so that backend imports work perfectly
+# Set python path so that backend imports work
 ENV PYTHONPATH=/app
 
-# Generate the datasets, train ML models, and build RAG collections
+# Generate datasets, train ML models, build RAG collections
 RUN python -m backend.generate_data
 RUN python -m backend.train_ml
 RUN python -c "from backend.rag.vectordb import build_vector_db; build_vector_db()"
