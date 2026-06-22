@@ -75,6 +75,16 @@ def query_db(query: str, params=()) -> List[Dict[str, Any]]:
 
 
 # Routes
+@app.get("/")
+def home():
+    """Root endpoint - confirms the API is live."""
+    return {"message": "F1 AI Race Engineer API is running successfully 🏎️"}
+
+@app.get("/health")
+def health():
+    """Health check endpoint for Render."""
+    return {"status": "healthy"}
+
 @app.post("/chat")
 async def chat_endpoint(request: ChatRequest):
     """Executes the LangGraph agent workflow to handle driver query."""
